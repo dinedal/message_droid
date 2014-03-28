@@ -47,8 +47,6 @@ func updateLedSign(text string) {
 	}
 }
 
-// curl -i -X POST -d'{"service_id": "realtime_spend", "text": "your message here"}' http://localhost:8080/update
-
 func update(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
