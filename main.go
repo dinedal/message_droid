@@ -36,7 +36,7 @@ func panicOnError(err error) {
 
 func updateLedSign(text string) {
 	if *productionFlag {
-		cmd := exec.Command("/home/pi/muni-led-sign/client/lowlevel.pl", "--speed", "3", "--effect", "scroll")
+		cmd := exec.Command("lowlevel.pl", "--speed", "3", "--effect", "scroll")
 		cmd.Stdin = strings.NewReader(text)
 		err := cmd.Run()
 		if err != nil {
@@ -109,3 +109,4 @@ func main() {
 		panic(err)
 	}
 }
+
