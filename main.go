@@ -19,14 +19,13 @@ type Service struct {
 	Text      string `json:"text"`
 }
 
-// TODO: Service obsoletion.
 var state struct {
-	Services []Service
+	Services []Service // Queue of upcoming services. Index 0 is next service.
 
 	sync.RWMutex
 }
 
-const refreshRateSeconds time.Duration = 20
+const refreshRateSeconds time.Duration = 10
 
 func panicOnError(err error) {
 	if err != nil {
@@ -73,18 +72,14 @@ func update(w http.ResponseWriter, r *http.Request) {
 
 func background() {
 	var currentText string
-	var serviceIndex int
 
 	for {
 		var newText string
 
 		state.RLock()
 		if len(state.Services) > 0 {
-			if serviceIndex >= len(state.Services) {
-				serviceIndex = 0
-			}
-			newText = state.Services[serviceIndex].Text
-			serviceIndex++
+			newText = state.Services[0].Text
+			state.Services = state.Services[1:]
 		}
 		state.RUnlock()
 
@@ -109,4 +104,3 @@ func main() {
 		panic(err)
 	}
 }
-
