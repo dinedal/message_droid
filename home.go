@@ -8,7 +8,7 @@ import (
 var homeTmpl = template.Must(template.New("").Parse(`<html>
 	<body>
 		<h1>MessageDroid</h1>
-		<h2>Services</h2>
+		<h2>Upcoming Services</h2>
 		<div>
 			<ul>
 {{range .Services}}				<li><b>{{.ServiceId}}:</b> {{.Text}}</li>
