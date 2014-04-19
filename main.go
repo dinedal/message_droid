@@ -10,17 +10,14 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/triggit/MessageDroid/common"
 )
 
 var productionFlag = flag.Bool("production", false, "Use actual LED sign.")
 
-type Service struct {
-	ServiceId string `json:"service_id"`
-	Text      string `json:"text"`
-}
-
 var state struct {
-	Services []Service // Queue of upcoming services. Index 0 is next service.
+	Services []common.ServiceUpdate // Queue of upcoming services. Index 0 is next service.
 
 	sync.RWMutex
 }
@@ -52,7 +49,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var service Service
+	var service common.ServiceUpdate
 	if err := json.NewDecoder(r.Body).Decode(&service); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
