@@ -105,5 +105,7 @@ func main() {
 		log.Panicln("ioutil.ReadAll:", err)
 	}
 
+	fmt.Println("\nStarting.")
+
 	common.ServiceMainLoop(NewWorker(string(token), *orgNameFlag), "github_closed_issues", 30*time.Second)
 }
