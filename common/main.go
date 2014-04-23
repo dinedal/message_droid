@@ -31,9 +31,11 @@ func ServiceMainLoop(worker ServiceWorker, serviceId string, updateInterval time
 			log.Println("json.Marshal:", err)
 		}
 
-		_, err = http.Post("http://localhost:8080/update", "application/json", bytes.NewReader(body))
+		resp, err := http.Post("http://localhost:8080/update", "application/json", bytes.NewReader(body))
 		if err != nil {
 			log.Println("http.Post:", err)
+		} else {
+			resp.Body.Close()
 		}
 
 		time.Sleep(updateInterval - time.Since(started))
