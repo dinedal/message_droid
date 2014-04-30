@@ -6,6 +6,9 @@ import (
 )
 
 var homeTmpl = template.Must(template.New("").Parse(`<html>
+	<head>
+		<meta http-equiv="Refresh" content="5" />
+	</head>
 	<body>
 		<h1>MessageDroid</h1>
 		<h2>Upcoming Services</h2>
