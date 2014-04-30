@@ -14,6 +14,7 @@ import (
 	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
+	"github.com/shurcooL/go-goon"
 	"github.com/shurcooL/go/time_util"
 	"github.com/sourcegraph/apiproxy"
 	"github.com/sourcegraph/apiproxy/service/github"
@@ -51,7 +52,7 @@ func NewWorker(token, orgName string) common.ServiceWorker {
 	return &worker{client: github.NewClient(httpClient), orgName: orgName}
 }
 
-func (this *worker) update() {
+func (this *worker) update() error {
 	// Reset the counter to 0 and count all issues.
 	this.closedIssues = 0
 
@@ -62,7 +63,9 @@ func (this *worker) update() {
 	for {
 		issues, resp, err := this.client.Issues.ListByOrg(this.orgName, opt)
 		if err != nil {
-			log.Panicln("github.ListByOrg:", err)
+			goon.Dump(err)
+			log.Println("github.ListByOrg:", err)
+			return err
 		}
 
 		// Despite the Since filter, issues with other activity will show up.
@@ -81,10 +84,14 @@ func (this *worker) update() {
 
 		break
 	}
+
+	return nil
 }
 
 func (this *worker) GetServiceUpdate() string {
-	this.update()
+	if err := this.update(); err != nil {
+		return fmt.Sprintf("Error happened while calculating closed issues.")
+	}
 
 	return fmt.Sprintf("Issues Closed this week: %v", this.closedIssues)
 }
