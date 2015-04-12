@@ -1,5 +1,5 @@
-MessageDroid
-============
+message_droid
+=============
 
 API
 ---

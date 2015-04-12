@@ -3,13 +3,13 @@ package main
 import (
 	"time"
 
-	"github.com/triggit/MessageDroid/common"
+	"github.com/dinedal/message_droid/common"
 )
 
 type worker struct{}
 
 func (_ *worker) GetServiceUpdate() string {
-	const welcome = "Welcome to Triggit!"
+	const welcome = "Welcome!"
 
 	return welcome
 }
