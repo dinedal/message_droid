@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/triggit/MessageDroid/common"
+	"github.com/dinedal/message_droid/common"
 
 	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"

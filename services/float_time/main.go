@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/triggit/MessageDroid/common"
+	"github.com/dinedal/message_droid/common"
 )
 
 type worker struct{}

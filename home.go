@@ -10,7 +10,7 @@ var homeTmpl = template.Must(template.New("").Parse(`<html>
 		<meta http-equiv="Refresh" content="5" />
 	</head>
 	<body>
-		<h1>MessageDroid</h1>
+		<h1>message_droid</h1>
 		<h2>Upcoming Services</h2>
 		<div>
 			<ul>

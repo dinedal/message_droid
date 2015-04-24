@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/triggit/MessageDroid/common"
+	"github.com/dinedal/message_droid/common"
 )
 
 var productionFlag = flag.Bool("production", false, "Use actual LED sign.")
