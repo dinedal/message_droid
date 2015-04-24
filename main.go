@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"go/build"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
 	"strings"
 	"sync"
@@ -90,9 +92,22 @@ func background() {
 }
 
 func main() {
+	flag.Parse()
+
 	log.Println("Started.")
 
-	flag.Parse()
+	// Set the working directory to the root of the package, so that its assets folder can be used.
+	{
+		bpkg, err := build.Import("github.com/dinedal/message_droid", "", build.ImportComment)
+		if err != nil {
+			log.Fatalln("Unable to find github.com/dinedal/message_droid package in your GOPATH, it's needed to load assets.")
+		}
+
+		err = os.Chdir(bpkg.Dir)
+		if err != nil {
+			log.Panicln("os.Chdir:", err)
+		}
+	}
 
 	go background()
 
