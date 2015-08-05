@@ -11,13 +11,13 @@ import (
 
 	"github.com/dinedal/message_droid/common"
 
-	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 	"github.com/shurcooL/go-goon"
 	"github.com/shurcooL/go/time_util"
 	"github.com/sourcegraph/apiproxy"
 	"github.com/sourcegraph/apiproxy/service/github"
+	"golang.org/x/oauth2"
 )
 
 type worker struct {
@@ -29,8 +29,8 @@ type worker struct {
 
 func NewWorker(token, orgName string) common.ServiceWorker {
 	// GitHub authentication.
-	authTransport := &oauth.Transport{
-		Token: &oauth.Token{AccessToken: token},
+	authTransport := &oauth2.Transport{
+		Token: &oauth2.Token{AccessToken: token},
 	}
 
 	// Memory caching.
