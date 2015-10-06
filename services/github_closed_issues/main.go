@@ -30,7 +30,7 @@ type worker struct {
 func NewWorker(token, orgName string) common.ServiceWorker {
 	// GitHub authentication.
 	authTransport := &oauth2.Transport{
-		Token: &oauth2.Token{AccessToken: token},
+		Source: oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
 	}
 
 	// Memory caching.
