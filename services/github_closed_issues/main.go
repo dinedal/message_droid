@@ -14,7 +14,7 @@ import (
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 	"github.com/shurcooL/go-goon"
-	"github.com/shurcooL/go/time_util"
+	"github.com/shurcooL/go/timeutil"
 	"golang.org/x/oauth2"
 )
 
@@ -50,7 +50,7 @@ func (this *worker) update() error {
 	this.closedIssues = 0
 
 	// Setup a filter to get all closed issues since the beginning of the current week, in local time.
-	startOfWeek := time_util.StartOfWeek(time.Now())
+	startOfWeek := timeutil.StartOfWeek(time.Now())
 	opt := &github.IssueListOptions{Filter: "all", State: "closed", Since: startOfWeek}
 
 	for {
