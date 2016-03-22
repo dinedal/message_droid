@@ -15,8 +15,6 @@ import (
 	"github.com/gregjones/httpcache"
 	"github.com/shurcooL/go-goon"
 	"github.com/shurcooL/go/time_util"
-	"github.com/sourcegraph/apiproxy"
-	"github.com/sourcegraph/apiproxy/service/github"
 	"golang.org/x/oauth2"
 )
 
@@ -28,23 +26,18 @@ type worker struct {
 }
 
 func NewWorker(token, orgName string) common.ServiceWorker {
-	// GitHub authentication.
-	authTransport := &oauth2.Transport{
+	var transport http.RoundTripper
+
+	// GitHub API authentication.
+	transport = &oauth2.Transport{
 		Source: oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
 	}
 
 	// Memory caching.
-	memoryCacheTransport := httpcache.NewMemoryCacheTransport()
-	memoryCacheTransport.Transport = authTransport
-
-	transport := &apiproxy.RevalidationTransport{
-		Transport: memoryCacheTransport,
-		Check: (&githubproxy.MaxAge{
-			User:         time.Hour * 24,
-			Repository:   time.Hour * 24,
-			Repositories: time.Hour * 24,
-			Activity:     time.Hour * 12,
-		}).Validator(),
+	transport = &httpcache.Transport{
+		Transport:           transport,
+		Cache:               httpcache.NewMemoryCache(),
+		MarkCachedResponses: true,
 	}
 
 	httpClient := &http.Client{Transport: transport}
