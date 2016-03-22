@@ -11,13 +11,11 @@ import (
 
 	"github.com/dinedal/message_droid/common"
 
-	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 	"github.com/shurcooL/go-goon"
-	"github.com/shurcooL/go/time_util"
-	"github.com/sourcegraph/apiproxy"
-	"github.com/sourcegraph/apiproxy/service/github"
+	"github.com/shurcooL/go/timeutil"
+	"golang.org/x/oauth2"
 )
 
 type worker struct {
@@ -28,23 +26,18 @@ type worker struct {
 }
 
 func NewWorker(token, orgName string) common.ServiceWorker {
-	// GitHub authentication.
-	authTransport := &oauth.Transport{
-		Token: &oauth.Token{AccessToken: token},
+	var transport http.RoundTripper
+
+	// GitHub API authentication.
+	transport = &oauth2.Transport{
+		Source: oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token}),
 	}
 
 	// Memory caching.
-	memoryCacheTransport := httpcache.NewMemoryCacheTransport()
-	memoryCacheTransport.Transport = authTransport
-
-	transport := &apiproxy.RevalidationTransport{
-		Transport: memoryCacheTransport,
-		Check: (&githubproxy.MaxAge{
-			User:         time.Hour * 24,
-			Repository:   time.Hour * 24,
-			Repositories: time.Hour * 24,
-			Activity:     time.Hour * 12,
-		}).Validator(),
+	transport = &httpcache.Transport{
+		Transport:           transport,
+		Cache:               httpcache.NewMemoryCache(),
+		MarkCachedResponses: true,
 	}
 
 	httpClient := &http.Client{Transport: transport}
@@ -57,7 +50,7 @@ func (this *worker) update() error {
 	this.closedIssues = 0
 
 	// Setup a filter to get all closed issues since the beginning of the current week, in local time.
-	startOfWeek := time_util.StartOfWeek(time.Now())
+	startOfWeek := timeutil.StartOfWeek(time.Now())
 	opt := &github.IssueListOptions{Filter: "all", State: "closed", Since: startOfWeek}
 
 	for {
